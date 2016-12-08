@@ -1,3 +1,68 @@
+<?php 
+  // DB接続
+  $dsn = 'mysql:dbname=myfriends;host=localhost';
+  $user = 'root';
+  $password = '';
+  $dbh = new PDO($dsn, $user, $password);
+  $dbh->query('SET NAMES utf8');
+
+  // 都道府県IDを取得
+  $area_id = $_GET['area_id'];
+
+  // SQL文作成(都道府県名)
+  $sql='SELECT * FROM `areas` WHERE `area_id` = '.$area_id;
+
+  // SQL文実行
+  $stmt = $dbh->prepare($sql);
+  $stmt->execute();
+
+  //　データの取得
+  $area_name = $stmt->fetch(PDO::FETCH_ASSOC);
+
+  //SQL文作成
+  $sql='SELECT * FROM `friends` WHERE `area_id` = '.$area_id;
+
+  // SQL文実行
+  $stmt = $dbh->prepare($sql);
+  $stmt->execute();
+
+  //　データの取得(友達情報)
+  $friends = array();
+
+  // 男女カウント用変数
+  $male = 0;
+  $female = 0;
+  
+  while(1){
+    //データ取得
+    $rec = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    //データが取得できなくなったら繰り返しの処理を終了
+    if ($rec == false){
+      break;
+    }
+
+    $friends[] = $rec;
+
+    //男女カウント
+    if ($rec['gender'] == 0){
+      //男性
+      $male++;
+    }else{
+      //女性
+      $female++;
+    }
+
+  }
+
+
+  // DB切断
+  $dbh = null;
+
+  // 宿題
+  // 前のページから選択された都道府県名を取得し、「○○のお友達」しましょう
+   
+?>
 <!DOCTYPE html>
 <html lang="ja">
   <head>
@@ -48,8 +113,8 @@
   <div class="container">
     <div class="row">
       <div class="col-md-4 content-margin-top">
-      <legend>北海道の友達</legend>
-      <div class="well">男性：2名　女性：1名</div>
+      <legend><?php echo $area_name['area_name']; ?>の友達</legend>
+      <div class="well">男性：<?php echo $male; ?>名　女性：<?php echo $female; ?>名</div>
         <table class="table table-striped table-hover table-condensed">
           <thead>
             <tr>
@@ -59,8 +124,9 @@
           </thead>
           <tbody>
             <!-- 友達の名前を表示 -->
+            <?php foreach ($friends as $friend) : ?>
             <tr>
-              <td><div class="text-center">山田　太郎</div></td>
+              <td><div class="text-center"><?php echo $friend['friend_name']; ?></div></td>
               <td>
                 <div class="text-center">
                   <a href="edit.html"><i class="fa fa-pencil"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;
@@ -68,7 +134,9 @@
                 </div>
               </td>
             </tr>
-            <tr>
+            <?php endforeach; ?>
+            
+            <!-- <tr>
               <td><div class="text-center">小林　花子</div></td>
               <td>
                 <div class="text-center">
@@ -85,7 +153,7 @@
                   <a href="javascript:void(0);" onclick="destroy();"><i class="fa fa-trash"></i></a>
                 </div>
               </td>
-            </tr>
+            </tr> -->
           </tbody>
         </table>
 
