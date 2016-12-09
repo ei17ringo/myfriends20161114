@@ -1,3 +1,60 @@
+<?php
+
+// ここにDBからデータを取得する処理を記述
+// ①DBへ接続
+$dsn = 'mysql:dbname=myfriends;host=localhost';
+$user = 'root';
+$password = '';
+$dbh = new PDO($dsn, $user, $password);
+$dbh->query('SET NAMES utf8');
+
+
+// ②SQL作成
+$sql = 'SELECT * FROM `areas`';
+
+// ③SQL実行
+$stmt = $dbh->prepare($sql);
+$stmt->execute();
+
+// ④データ取得
+// データ格納用変数
+$areas = array();
+
+While (1){
+  $rec = $stmt->fetch(PDO::FETCH_ASSOC);
+
+  //取得できるデータがなかったらループ終了
+  if ($rec == false){
+    break;
+  }
+
+  // echo $rec['area_id'];
+  // echo $rec['area_name'];
+
+  $areas[] = $rec;
+
+}
+
+//DBに登録する処理
+//POST送信されたときだけ行いたい処理を記述
+if (isset($_POST) && !empty($_POST)){
+
+  //登録する友達のSQL(INSERT文)
+  $sql = 'INSERT INTO `friends`(`friend_name`, `area_id`, `gender`, `age`, `created`) VALUES ("'.$_POST['name'].'",'.$_POST['area_id'].','.$_POST['gender'].','.$_POST['age'].',now())';
+
+  //SQL実行
+  $stmt = $dbh->prepare($sql);
+  $stmt->execute();
+
+  // 登録後、index.phpへ遷移
+  header('Location: index.php');
+}
+
+
+// ⑤DB切断
+$dbh = null;
+
+?>
 <!DOCTYPE html>
 <html lang="ja">
   <head>
@@ -32,7 +89,7 @@
                   <span class="icon-bar"></span>
                   <span class="icon-bar"></span>
               </button>
-              <a class="navbar-brand" href="index.html"><span class="strong-title"><i class="fa fa-facebook-square"></i> My friends</span></a>
+              <a class="navbar-brand" href="index.php"><span class="strong-title"><i class="fa fa-facebook-square"></i> My friends</span></a>
           </div>
           <!-- Collect the nav links, forms, and other content for toggling -->
           <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -62,11 +119,9 @@
               <div class="col-sm-10">
                 <select class="form-control" name="area_id">
                   <option value="0">出身地を選択</option>
-                  <option value="1">北海道</option>
-                  <option value="2">青森</option>
-                  <option value="3">岩手</option>
-                  <option value="4">宮城</option>
-                  <option value="5">秋田</option>
+                  <?php foreach ($areas as $area) : ?>
+                      <option value="<?php echo $area['area_id']; ?>"><?php echo $area['area_name']; ?></option>
+                  <?php endforeach; ?>
                 </select>
               </div>
             </div>
@@ -75,9 +130,9 @@
               <label class="col-sm-2 control-label">性別</label>
               <div class="col-sm-10">
                 <select class="form-control" name="gender">
-                  <option value="0">性別を選択</option>
-                  <option value="1">男性</option>
-                  <option value="2">女性</option>
+                  <option value="-1">性別を選択</option>
+                  <option value="0">男性</option>
+                  <option value="1">女性</option>
                 </select>
               </div>
             </div>

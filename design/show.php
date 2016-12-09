@@ -98,7 +98,7 @@
                   <span class="icon-bar"></span>
                   <span class="icon-bar"></span>
               </button>
-              <a class="navbar-brand" href="index.html"><span class="strong-title"><i class="fa fa-facebook-square"></i> My friends</span></a>
+              <a class="navbar-brand" href="index.php"><span class="strong-title"><i class="fa fa-facebook-square"></i> My friends</span></a>
           </div>
           <!-- Collect the nav links, forms, and other content for toggling -->
           <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -129,7 +129,7 @@
               <td><div class="text-center"><?php echo $friend['friend_name']; ?></div></td>
               <td>
                 <div class="text-center">
-                  <a href="edit.html"><i class="fa fa-pencil"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;
+                  <a href="edit.php?friend_id=<?php echo $friend['friend_id']; ?>"><i class="fa fa-pencil"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;
                   <a href="javascript:void(0);" onclick="destroy();"><i class="fa fa-trash"></i></a>
                 </div>
               </td>
@@ -157,7 +157,7 @@
           </tbody>
         </table>
 
-        <input type="button" class="btn btn-default" value="新規作成" onClick="location.href='new.html'">
+        <input type="button" class="btn btn-default" value="新規作成" onClick="location.href='new.php'">
       </div>
     </div>
   </div>
