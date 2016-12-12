@@ -36,6 +36,8 @@ While (1){
 
 }
 
+
+
  //パラメータを受け取る
  $friend_id = $_GET['friend_id'];
 
@@ -50,6 +52,18 @@ While (1){
 
  //友達のデータ取得
  $friends = $stmt->fetch(PDO::FETCH_ASSOC);
+
+ //データの更新処理
+ if (isset($_POST) && !empty($_POST)) {
+   $sql = 'UPDATE `friends` SET `friend_name`="'.$_POST['name'].'",`area_id`='.$_POST['area_id'].',`gender`='.$_POST['gender'].',`age`='.$_POST['age'].' WHERE `friend_id` = '.$friend_id;
+ 
+   // SQLを実行
+   $stmt = $dbh->prepare($sql);
+   $stmt->execute();
+ 
+   //更新処理完了後、index.phpへ遷移
+   header('Location: index.php');
+  }
 
  // DB切断
  $dbh = null;
@@ -160,5 +174,7 @@ While (1){
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
+
+
   </body>
 </html>

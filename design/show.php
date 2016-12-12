@@ -55,6 +55,8 @@
 
   }
 
+  //$_GET['action'] が存在する、かつ空でないとき、deleteが指定されていたら削除処理を行う
+  //削除処理を行ったら、index.phpに画面遷移する
 
   // DB切断
   $dbh = null;
@@ -130,7 +132,7 @@
               <td>
                 <div class="text-center">
                   <a href="edit.php?friend_id=<?php echo $friend['friend_id']; ?>"><i class="fa fa-pencil"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;
-                  <a href="javascript:void(0);" onclick="destroy();"><i class="fa fa-trash"></i></a>
+                  <a href="javascript:void(0);" onclick="destroy(<?php echo $friend['friend_id']; ?>);"><i class="fa fa-trash"></i></a>
                 </div>
               </td>
             </tr>
@@ -165,5 +167,18 @@
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
+    <script>
+    function destroy(friend_id) {
+    　// ポップアップを表示
+    　if (confirm('削除します。よろしいですか？')==true){
+        //OKボタンおした時
+        location.href = 'show.php?action=delete&friend_id=' + friend_id;
+        return true;
+      }else{
+        //キャンセルボタンをおした時
+        return false;
+      }
+    }
+    </script>
   </body>
 </html>
