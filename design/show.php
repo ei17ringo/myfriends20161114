@@ -6,6 +6,24 @@
   $dbh = new PDO($dsn, $user, $password);
   $dbh->query('SET NAMES utf8');
 
+  //$_GET['action'] が存在する、かつ空でないとき、deleteが指定されていたら削除処理を行う
+  //削除処理を行ったら、index.phpに画面遷移する
+  if (isset($_GET['action']) && !empty($_GET['action'])) {
+    if ($_GET['action'] == 'delete') {
+      //削除用のSQL文を作成(物理削除)
+      $sql = 'DELETE FROM `friends` WHERE `friend_id` = ' . $_GET['friend_id'];
+
+      // var_dump($sql);
+      // SQL実行
+      $stmt = $dbh->prepare($sql);
+      $stmt->execute();
+
+      // index.phpに画面遷移
+      header('Location: index.php');
+      
+    }
+  }
+
   // 都道府県IDを取得
   $area_id = $_GET['area_id'];
 
@@ -55,8 +73,7 @@
 
   }
 
-  //$_GET['action'] が存在する、かつ空でないとき、deleteが指定されていたら削除処理を行う
-  //削除処理を行ったら、index.phpに画面遷移する
+
 
   // DB切断
   $dbh = null;
